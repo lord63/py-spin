@@ -45,9 +45,12 @@ class Spinner(object):
     def reset(self):
         self.position = 0
 
-    def animate(self, interval=0.1):
-        while True:
-            print("\r{0}".format(self.next()), end="")
+    def animate(self, words='', interval=0.1):
+        while(self.position != -1):
+            print("\r{0}    {1}".format(self.next(), words), end="")
             time.sleep(interval)
             sys.stdout.flush()
         print("\n")
+
+    def stop(self):
+        self.position = -1
