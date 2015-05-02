@@ -3,6 +3,10 @@
 
 from __future__ import absolute_import, unicode_literals, print_function
 
+import sys
+import time
+
+
 Box1 = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 Box2 = '⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
 Box3 = '⠄⠆⠇⠋⠙⠸⠰⠠⠰⠸⠙⠋⠇⠆'
@@ -40,3 +44,10 @@ class Spinner(object):
 
     def reset(self):
         self.position = 0
+
+    def animate(self, interval=0.1):
+        while True:
+            print("\r{0}".format(self.next()), end="")
+            time.sleep(interval)
+            sys.stdout.flush()
+        print("\n")
