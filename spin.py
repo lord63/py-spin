@@ -36,11 +36,12 @@ class Spinner(object):
         return self.frames[self.position]
 
     def next(self):
+        current_frame = self.current()
         if self.position == self.length - 1:
             self.reset()
         else:
             self.position = self.position + 1
-        return self.frames[self.position]
+        return current_frame
 
     def reset(self):
         self.position = 0
