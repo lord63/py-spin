@@ -5,6 +5,8 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 import sys
 import time
+from functools import wraps
+from multiprocessing import Process, Queue
 
 
 Box1 = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
@@ -55,3 +57,27 @@ class Spinner(object):
 
     def stop(self):
         self.position = -1
+
+
+def make_spin(spin_style=Default, words=""):
+    spinner = Spinner(spin_style)
+    queue = Queue()
+
+    def add_queue(func):
+        @wraps(func)
+        def wrapper():
+            func()
+            queue.put_nowait(1)
+        return wrapper
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper():
+            process = Process(target=add_queue(func))
+            process.start()
+            while queue.empty():
+                print("\r{0}    {1}".format(spinner.next(), words), end="")
+                sys.stdout.flush()
+                time.sleep(0.1)
+        return wrapper
+    return decorator
