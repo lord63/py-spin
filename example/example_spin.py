@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals, print_function
 import sys
 import time
 
-import spin
+from pyspin import spin
 
 
 def show(name, frames):

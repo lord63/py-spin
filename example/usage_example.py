@@ -5,8 +5,8 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 import time
 
-import spin
-from spin import make_spin
+from pyspin import spin
+from pyspin.spin import make_spin
 
 
 @make_spin(spin.Spin1, "Downloading...")
