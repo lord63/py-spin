@@ -75,6 +75,8 @@ def make_spin(spin_style=Default, words=""):
         def wrapper():
             process = Process(target=add_queue(func))
             process.start()
+            # If the func has some print message, print them first.
+            time.sleep(0.2)
             while queue.empty():
                 print("\r{0}    {1}".format(spinner.next(), words), end="")
                 sys.stdout.flush()
