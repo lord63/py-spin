@@ -12,7 +12,7 @@ from pyspin import spin
 def show(name, frames):
     s = spin.Spinner(frames)
     print(name)
-    for i in range(30):
+    for i in range(50):
         time.sleep(0.1)
         print("\r{0}".format(s.next()), end="")
         sys.stdout.flush()
