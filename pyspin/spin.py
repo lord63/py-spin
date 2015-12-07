@@ -55,9 +55,6 @@ class Spinner(object):
             sys.stdout.flush()
         print("\n")
 
-    def stop(self):
-        self.position = -1
-
 
 def make_spin(spin_style=Default, words=""):
     spinner = Spinner(spin_style)
