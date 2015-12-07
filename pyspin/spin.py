@@ -81,5 +81,6 @@ def make_spin(spin_style=Default, words=""):
                 print("\r{0}    {1}".format(spinner.next(), words), end="")
                 sys.stdout.flush()
                 time.sleep(0.1)
+            print('')
         return wrapper
     return decorator
