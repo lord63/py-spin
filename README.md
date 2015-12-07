@@ -14,15 +14,17 @@ A little terminal spinner lib. Heavily inspired by [go-spin][].
 
 ## Usage
 
+make a spinner by hand:
+
     from __future__ import print_function
 
     import sys
     import time
 
-    from pyspin import spin
+    from pyspin.spin import Default, Spinner
 
     # Choose a spin style.
-    spin = spin.Spinner(spin.Default)
+    spin = Spinner(Default)
     # Spin it now.
     for i in range(50):
         print("\r{0}".format(spin.next()), end="")
@@ -30,19 +32,22 @@ A little terminal spinner lib. Heavily inspired by [go-spin][].
         time.sleep(0.1)
 
 
-or you can use the decorator pyspin provide.
+or you can use the decorator pyspin provide:
 
     from __future__ import print_function
 
-    from pyspin import spin
-    from pyspin.spin import make_spin
+    from pyspin.spin import make_spin, Default
 
     # Choose a spin style and the words when showing the spin.
-    @make_spin(spin.Default, "say some words here...")
+    @make_spin(Default, "Downloading...")
     def download_video():
-        print("I'm downloading a video, and it'll cost much time.")
         time.sleep(10)
+
+    if __name__ == '__main__':
+        print("I'm going to download a video, and it'll cost much time.")
+        download_video()
         print("Done!")
+
 
 
 You can have a look at the example code in the example folder.
