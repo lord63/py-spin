@@ -5,17 +5,16 @@ from __future__ import absolute_import, print_function
 
 import time
 
-from pyspin import spin
-from pyspin.spin import make_spin
+from pyspin.spin import make_spin, Spin1
 
 
-@make_spin(spin.Spin1, "Downloading...")
+@make_spin(Spin1, "Downloading...")
 def demo():
-    print("Assume we're downloading a video")
-    print("It would cost much time.")
     time.sleep(5)
-    print("Download success!")
 
 
 if __name__ == '__main__':
+    print("Assume we're downloading a video")
+    print("It would cost much time.")
     demo()
+    print("Download success!")
