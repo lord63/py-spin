@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals, print_function
+from __future__ import absolute_import, print_function
 
 import sys
 import time
@@ -9,22 +9,22 @@ from functools import wraps
 from multiprocessing import Process, Queue
 
 
-Box1 = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
-Box2 = '⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
-Box3 = '⠄⠆⠇⠋⠙⠸⠰⠠⠰⠸⠙⠋⠇⠆'
-Box4 = '⠋⠙⠚⠒⠂⠂⠒⠲⠴⠦⠖⠒⠐⠐⠒⠓⠋'
-Box5 = '⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠴⠲⠒⠂⠂⠒⠚⠙⠉⠁'
-Box6 = '⠈⠉⠋⠓⠒⠐⠐⠒⠖⠦⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈'
-Box7 = '⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈'
-Spin1 = '|/-\\'
-Spin2 = '◴◷◶◵'
-Spin3 = '◰◳◲◱'
-Spin4 = '◐◓◑◒'
-Spin5 = '▉▊▋▌▍▎▏▎▍▌▋▊▉'
-Spin6 = '▌▄▐▀'
-Spin7 = '╫╪'
-Spin8 = '■□▪▫'
-Spin9 = '←↑→↓'
+Box1 = u'⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+Box2 = u'⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
+Box3 = u'⠄⠆⠇⠋⠙⠸⠰⠠⠰⠸⠙⠋⠇⠆'
+Box4 = u'⠋⠙⠚⠒⠂⠂⠒⠲⠴⠦⠖⠒⠐⠐⠒⠓⠋'
+Box5 = u'⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠴⠲⠒⠂⠂⠒⠚⠙⠉⠁'
+Box6 = u'⠈⠉⠋⠓⠒⠐⠐⠒⠖⠦⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈'
+Box7 = u'⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈'
+Spin1 = u'|/-\\'
+Spin2 = u'◴◷◶◵'
+Spin3 = u'◰◳◲◱'
+Spin4 = u'◐◓◑◒'
+Spin5 = u'▉▊▋▌▍▎▏▎▍▌▋▊▉'
+Spin6 = u'▌▄▐▀'
+Spin7 = u'╫╪'
+Spin8 = u'■□▪▫'
+Spin9 = u'←↑→↓'
 Default = Box1
 
 
@@ -43,7 +43,7 @@ class Spinner(object):
             self.reset()
         else:
             self.position = self.position + 1
-        return current_frame
+        return current_frame.encode('utf-8')
 
     def reset(self):
         self.position = 0

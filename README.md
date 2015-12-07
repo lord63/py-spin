@@ -14,13 +14,13 @@ A little terminal spinner lib. Heavily inspired by [go-spin][].
 
 ## Usage
 
-    from __future__ import print_function, unicode_literals
-    
+    from __future__ import print_function
+
     import sys
     import time
-    
+
     from pyspin import spin
-    
+
     # Choose a spin style.
     spin = spin.Spinner(spin.Default)
     # Spin it now.
@@ -29,22 +29,22 @@ A little terminal spinner lib. Heavily inspired by [go-spin][].
         sys.stdout.flush()
         time.sleep(0.1)
 
-        
+
 or you can use the decorator pyspin provide.
 
-    from __future__ import print_function, unicode_literals
+    from __future__ import print_function
 
     from pyspin import spin
     from pyspin.spin import make_spin
-    
+
     # Choose a spin style and the words when showing the spin.
     @make_spin(spin.Default, "say some words here...")
     def download_video():
         print("I'm downloading a video, and it'll cost much time.")
         time.sleep(10)
         print("Done!")
-        
-        
+
+
 You can have a look at the example code in the example folder.
 
 ## License
