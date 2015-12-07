@@ -9,6 +9,13 @@ from functools import wraps
 from multiprocessing import Process, Queue
 
 
+# For python 2/3 compatible.
+if sys.version_info.major == 2:
+    text_type = unicode
+else:
+    text_type = str
+
+
 Box1 = u'⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 Box2 = u'⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
 Box3 = u'⠄⠆⠇⠋⠙⠸⠰⠠⠰⠸⠙⠋⠇⠆'
@@ -43,7 +50,7 @@ class Spinner(object):
             self.reset()
         else:
             self.position = self.position + 1
-        return current_frame.encode('utf-8')
+        return text_type(current_frame)
 
     def reset(self):
         self.position = 0
