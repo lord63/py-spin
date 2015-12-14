@@ -55,13 +55,6 @@ class Spinner(object):
     def reset(self):
         self.position = 0
 
-    def animate(self, words='', interval=0.1):
-        while(self.position != -1):
-            print("\r{0}    {1}".format(self.next(), words), end="")
-            time.sleep(interval)
-            sys.stdout.flush()
-        print("\n")
-
 
 def make_spin(spin_style=Default, words=""):
     spinner = Spinner(spin_style)
