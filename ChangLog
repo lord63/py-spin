@@ -1,2 +1,15 @@
+Version numbers are following the Semantic Versioning.
+
+2015.12.15 v1.0.0
+- add
+    - python3.5 support
+    - wheel support
+- break change:
+    - remove `Spinner.stop`
+    - remove `Spinner.animate`
+- fix:
+    - under python3.x, the print message has 'b' prefix
+    - 2.x unicode error
+
 2015.05.04 v0.1.0
 - initial release

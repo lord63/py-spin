@@ -1,6 +1,9 @@
 # Py-Spin
 
 [![Latest Version][1]][2]
+[![Build Status][3]][4]
+[![Python Versions][5]][2]
+
 
 A little terminal spinner lib. Heavily inspired by [go-spin][].
 
@@ -48,9 +51,17 @@ or you can use the decorator pyspin provide:
         download_video()
         print("Done!")
 
+You can have a look at the example code in the example folder. Run it via:
 
+    $ python example/example_spin.py
+    $ python example/usage_example.py
 
-You can have a look at the example code in the example folder.
+## Contribute
+
+* If you find an interesting spinner, send me a pull request <3
+* If you find a bug or have any suggestions, open an issue.
+
+Contributions are always welcome at any time! :sparkles: :cake: :sparkles:
 
 ## License
 
@@ -61,3 +72,6 @@ MIT.
 [2]: https://pypi.python.org/pypi/pyspin
 [go-spin]: https://github.com/tj/go-spin
 [pyspin_demo]: https://cloud.githubusercontent.com/assets/5268051/7448038/ba152a8c-f241-11e4-86e0-50bc3b33bce5.gif
+[3]: https://travis-ci.org/lord63/py-spin.svg
+[4]: https://travis-ci.org/lord63/py-spin
+[5]: https://img.shields.io/pypi/pyversions/pyspin.svg
