@@ -13,9 +13,9 @@ def show(name, frames):
     s = spin.Spinner(frames)
     print(name)
     for i in range(50):
-        time.sleep(0.1)
-        print("\r{0}".format(s.next()), end="")
+        print(u"\r{0}".format(s.next()), end="")
         sys.stdout.flush()
+        time.sleep(0.1)
     print('\n')
 
 
