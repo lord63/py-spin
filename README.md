@@ -27,7 +27,7 @@ make a spinner by hand:
     spin = Spinner(Default)
     # Spin it now.
     for i in range(50):
-        print("\r{0}".format(spin.next()), end="")
+        print(u"\r{0}".format(spin.next()), end="")
         sys.stdout.flush()
         time.sleep(0.1)
 
