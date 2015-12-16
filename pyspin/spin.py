@@ -46,10 +46,7 @@ class Spinner(object):
 
     def next(self):
         current_frame = self.current()
-        if self.position == self.length - 1:
-            self.reset()
-        else:
-            self.position = self.position + 1
+        self.position = (self.position + 1) % self.length
         return text_type(current_frame)
 
     def reset(self):
