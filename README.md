@@ -38,6 +38,8 @@ make a spinner by hand:
 or you can use the decorator pyspin provide:
 
     from __future__ import print_function
+    
+    import time
 
     from pyspin.spin import make_spin, Default
 
