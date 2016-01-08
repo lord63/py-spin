@@ -19,39 +19,42 @@ A little terminal spinner lib. Heavily inspired by [go-spin][].
 
 make a spinner by hand:
 
-    from __future__ import print_function
+```python
+from __future__ import print_function
 
-    import sys
-    import time
+import sys
+import time
 
-    from pyspin.spin import Default, Spinner
+from pyspin.spin import Default, Spinner
 
-    # Choose a spin style.
-    spin = Spinner(Default)
-    # Spin it now.
-    for i in range(50):
-        print(u"\r{0}".format(spin.next()), end="")
-        sys.stdout.flush()
-        time.sleep(0.1)
-
+# Choose a spin style.
+spin = Spinner(Default)
+# Spin it now.
+for i in range(50):
+    print(u"\r{0}".format(spin.next()), end="")
+    sys.stdout.flush()
+    time.sleep(0.1)
+```
 
 or you can use the decorator pyspin provide:
 
-    from __future__ import print_function
-    
-    import time
+```python
+from __future__ import print_function
 
-    from pyspin.spin import make_spin, Default
+import time
 
-    # Choose a spin style and the words when showing the spin.
-    @make_spin(Default, "Downloading...")
-    def download_video():
-        time.sleep(10)
+from pyspin.spin import make_spin, Default
 
-    if __name__ == '__main__':
-        print("I'm going to download a video, and it'll cost much time.")
-        download_video()
-        print("Done!")
+# Choose a spin style and the words when showing the spin.
+@make_spin(Default, "Downloading...")
+def download_video():
+    time.sleep(10)
+
+if __name__ == '__main__':
+    print("I'm going to download a video, and it'll cost much time.")
+    download_video()
+    print("Done!")
+```
 
 You can have a look at the example code in the example folder. Run it via:
 
