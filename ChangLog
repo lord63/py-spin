@@ -1,5 +1,11 @@
 Version numbers are following the Semantic Versioning.
 
+2016.02.17 v1.0.1
+
+- fix:
+    - add the missing python 3.5 support in setup.py
+- improve the `Spinner.next`
+
 2015.12.15 v1.0.0
 - add
     - python3.5 support
