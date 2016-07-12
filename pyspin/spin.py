@@ -74,6 +74,7 @@ def make_spin(spin_style=Default, words=""):
                       end="")
                 sys.stdout.flush()
                 time.sleep(0.1)
+            queue.get()
             print('')
         return wrapper
     return decorator
