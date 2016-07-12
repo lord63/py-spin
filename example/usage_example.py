@@ -18,3 +18,6 @@ if __name__ == '__main__':
     print("It would cost much time.")
     demo()
     print("Download success!")
+    print("Try again.")
+    demo()
+    print("Yeah!")
