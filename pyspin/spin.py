@@ -6,8 +6,8 @@ from __future__ import absolute_import, print_function
 import sys
 import time
 from functools import wraps
-from multiprocessing import Process, Queue
-
+from threading import Thread
+from Queue import Queue
 
 # For python 2/3 compatible.
 if sys.version_info.major == 2:
@@ -53,28 +53,29 @@ class Spinner(object):
         self.position = 0
 
 
-def make_spin(spin_style=Default, words=""):
+def make_spin(spin_style=Default, words="", ending="\n"):
     spinner = Spinner(spin_style)
     queue = Queue()
 
     def add_queue(func):
         @wraps(func)
-        def wrapper():
-            func()
-            queue.put_nowait(1)
+        def wrapper(*args, **kwargs):
+            ret = func(*args, **kwargs)
+            queue.put_nowait(ret)
         return wrapper
 
     def decorator(func):
         @wraps(func)
-        def wrapper():
-            process = Process(target=add_queue(func))
+        def wrapper(*args, **kwargs):
+            process = Thread(target=add_queue(func), args=args, kwargs=kwargs)
             process.start()
             while queue.empty():
                 print(text_type("\r{0}    {1}").format(spinner.next(), words),
                       end="")
                 sys.stdout.flush()
                 time.sleep(0.1)
-            queue.get()
-            print('')
+            ret = queue.get()
+            print(ending, end="")
+            return ret
         return wrapper
     return decorator
