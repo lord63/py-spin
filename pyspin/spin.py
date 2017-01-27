@@ -6,8 +6,7 @@ from __future__ import absolute_import, print_function
 import sys
 import time
 from functools import wraps
-from threading import Thread
-from Queue import Queue
+import concurrent.futures
 
 # For python 2/3 compatible.
 if sys.version_info.major == 2:
@@ -55,27 +54,20 @@ class Spinner(object):
 
 def make_spin(spin_style=Default, words="", ending="\n"):
     spinner = Spinner(spin_style)
-    queue = Queue()
-
-    def add_queue(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            ret = func(*args, **kwargs)
-            queue.put_nowait(ret)
-        return wrapper
 
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            process = Thread(target=add_queue(func), args=args, kwargs=kwargs)
-            process.start()
-            while queue.empty():
-                print(text_type("\r{0}    {1}").format(spinner.next(), words),
-                      end="")
-                sys.stdout.flush()
-                time.sleep(0.1)
-            ret = queue.get()
-            print(ending, end="")
-            return ret
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(func, *args, **kwargs)
+
+                while future.running():
+                    print(text_type("\r{0}    {1}").format(spinner.next(), words),
+                          end="")
+                    sys.stdout.flush()
+                    time.sleep(0.1)
+
+                print(ending, end="")
+                return future.result()
         return wrapper
     return decorator
