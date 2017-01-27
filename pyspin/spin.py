@@ -53,7 +53,7 @@ class Spinner(object):
         self.position = 0
 
 
-def make_spin(spin_style=Default, words=""):
+def make_spin(spin_style=Default, words="", ending="\n"):
     spinner = Spinner(spin_style)
     queue = Queue()
 
@@ -75,7 +75,7 @@ def make_spin(spin_style=Default, words=""):
                 sys.stdout.flush()
                 time.sleep(0.1)
             ret = queue.get()
-            print('')
+            print(ending, end="")
             return ret
         return wrapper
     return decorator
