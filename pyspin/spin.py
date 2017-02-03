@@ -59,14 +59,14 @@ def make_spin(spin_style=Default, words=""):
 
     def add_queue(func):
         @wraps(func)
-        def wrapper():
+        def wrapper(self=None):
             func()
             queue.put_nowait(1)
         return wrapper
 
     def decorator(func):
         @wraps(func)
-        def wrapper():
+        def wrapper(self=None):
             process = Process(target=add_queue(func))
             process.start()
             while queue.empty():
