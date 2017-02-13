@@ -6,8 +6,7 @@ from __future__ import absolute_import, print_function
 import sys
 import time
 from functools import wraps
-from multiprocessing import Process, Queue
-
+from concurrent.futures import ThreadPoolExecutor
 
 # For python 2/3 compatible.
 if sys.version_info.major == 2:
@@ -36,6 +35,7 @@ Default = Box1
 
 
 class Spinner(object):
+
     def __init__(self, frames):
         self.frames = frames
         self.length = len(frames)
@@ -53,28 +53,23 @@ class Spinner(object):
         self.position = 0
 
 
-def make_spin(spin_style=Default, words=""):
+def make_spin(spin_style=Default, words="", ending="\n"):
     spinner = Spinner(spin_style)
-    queue = Queue()
-
-    def add_queue(func):
-        @wraps(func)
-        def wrapper():
-            func()
-            queue.put_nowait(1)
-        return wrapper
 
     def decorator(func):
         @wraps(func)
-        def wrapper():
-            process = Process(target=add_queue(func))
-            process.start()
-            while queue.empty():
-                print(text_type("\r{0}    {1}").format(spinner.next(), words),
-                      end="")
-                sys.stdout.flush()
-                time.sleep(0.1)
-            queue.get()
-            print('')
+        def wrapper(*args, **kwargs):
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(func, *args, **kwargs)
+
+                while future.running():
+                    print(text_type("\r{0}    {1}").format(spinner.next(),
+                                                           words),
+                          end="")
+                    sys.stdout.flush()
+                    time.sleep(0.1)
+
+                print(ending, end="")
+                return future.result()
         return wrapper
     return decorator

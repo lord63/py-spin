@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 
+import sys
+
 from setuptools import setup
 
 import pyspin
@@ -13,6 +15,11 @@ except (IOError, ImportError):
     with open('README.md') as f:
         long_description = f.read()
 
+
+if sys.version_info < (3, 2):
+    requires = ["futures", ]
+else:
+    requires = []
 
 setup(
     name='pyspin',
@@ -38,5 +45,6 @@ setup(
     ],
     keywords='terminal spin spinner',
     packages=['pyspin'],
-    include_package_data=True
+    include_package_data=True,
+    install_requires=requires
 )
