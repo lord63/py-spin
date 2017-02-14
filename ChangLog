@@ -1,5 +1,12 @@
 Version numbers are following the Semantic Versioning.
 
+2017.02.14 v1.1.0
+- add
+    - python3.6 support
+- fix(see pr#9, thanks to @fruch)
+    - fix infinite spin when exception happens
+    - fix functions with args
+
 2016.07.15 v1.0.2
 - clear queue, see #6, thanks to @tschaume
 
