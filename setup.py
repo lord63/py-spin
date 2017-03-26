@@ -16,11 +16,6 @@ except (IOError, ImportError):
         long_description = f.read()
 
 
-if sys.version_info < (3, 2):
-    requires = ["futures", ]
-else:
-    requires = []
-
 setup(
     name='pyspin',
     version=pyspin.__version__,
@@ -47,5 +42,7 @@ setup(
     keywords='terminal spin spinner',
     packages=['pyspin'],
     include_package_data=True,
-    install_requires=requires
+    install_requires=[
+        'futures; python_version < "3.2"'
+    ],
 )
