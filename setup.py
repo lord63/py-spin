@@ -42,6 +42,7 @@ setup(
     keywords='terminal spin spinner',
     packages=['pyspin'],
     include_package_data=True,
+    setup_requires=['setuptools >= 20.8.1'],
     install_requires=[
         'futures; python_version < "3.2"'
     ],
