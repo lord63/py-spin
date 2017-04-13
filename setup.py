@@ -7,13 +7,8 @@ from setuptools import setup
 
 import pyspin
 
-
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-    with open('README.md') as f:
-        long_description = f.read()
+with open('README.rst') as f:
+    long_description = f.read()
 
 
 setup(
