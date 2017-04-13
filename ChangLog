@@ -1,5 +1,9 @@
 Version numbers are following the Semantic Versioning.
 
+2017.04.13 v1.1.1
+- fix
+    - fix incorrect futures requirement, thanks to @xoviat
+
 2017.02.14 v1.1.0
 - add
     - python3.6 support
