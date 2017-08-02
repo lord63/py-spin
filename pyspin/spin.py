@@ -69,8 +69,8 @@ class Spinner(object):
     def init_spin(self):
         while not self.stop_running.is_set():
             print(text_type("\r{0}    {1}").format(self.next(),
-                                                              self.words),
-                             end="")
+                                                   self.words),
+                  end="")
             sys.stdout.flush()
             time.sleep(0.1)
 
