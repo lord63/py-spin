@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from __future__ import absolute_import, print_function
 
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 import time
 from functools import wraps
 from concurrent.futures import ThreadPoolExecutor
