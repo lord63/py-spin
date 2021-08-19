@@ -5,7 +5,7 @@ Py-Spin
 | |Build Status|
 | |Python Versions|
 
-A little terminal spinner lib. Heavily inspired by `go-spin`_.
+A little terminal spinner lib. Heavily inspired by `go-spin`_. (This library is not the one from FLIR).
 
 Demo
 ----
