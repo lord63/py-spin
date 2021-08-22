@@ -4,6 +4,7 @@
 from __future__ import absolute_import, print_function
 
 import sys
+import threading
 import time
 from functools import wraps
 from concurrent.futures import ThreadPoolExecutor
@@ -13,7 +14,6 @@ if sys.version_info.major == 2:
     text_type = unicode
 else:
     text_type = str
-
 
 Box1 = u'⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 Box2 = u'⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
@@ -35,11 +35,14 @@ Default = Box1
 
 
 class Spinner(object):
-
-    def __init__(self, frames):
+    def __init__(self, frames=Default, words="", ending="\n"):
         self.frames = frames
         self.length = len(frames)
         self.position = 0
+        self.words = words
+        self.ending = ending
+        self.stop_running = None
+        self.spin_thread = None
 
     def current(self):
         return self.frames[self.position]
@@ -51,6 +54,35 @@ class Spinner(object):
 
     def reset(self):
         self.position = 0
+
+    def start(self):
+        if sys.stdout.isatty():
+            self.stop_running = threading.Event()
+            self.spin_thread = threading.Thread(target=self.init_spin)
+            self.spin_thread.start()
+
+    def stop(self):
+        if self.spin_thread:
+            self.stop_running.set()
+            self.spin_thread.join()
+
+    def init_spin(self):
+        while not self.stop_running.is_set():
+            print(text_type("\r{0}    {1}").format(self.next(),
+                                                   self.words),
+                  end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        print(self.ending, end="")
+        sys.stdout.flush()
+        return False
 
 
 def make_spin(spin_style=Default, words="", ending="\n"):
@@ -71,5 +103,7 @@ def make_spin(spin_style=Default, words="", ending="\n"):
 
                 print(ending, end="")
                 return future.result()
+
         return wrapper
+
     return decorator
