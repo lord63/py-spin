@@ -40,7 +40,7 @@ setup(
     setup_requires=[
         'setuptools >= 20.8.1',
     ],
-    install_requires=[
-        'futures; python_version < "3.2"',
-    ],
+    install_requires={
+        'futures; python_version == "2.7"'
+    }
 )
