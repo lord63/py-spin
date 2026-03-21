@@ -55,13 +55,13 @@ class Spinner(object):
     def reset(self):
         self.position = 0
 
-    def start(self):
+    def _start(self):
         if sys.stdout.isatty():
             self.stop_running = threading.Event()
             self.spin_thread = threading.Thread(target=self.init_spin)
             self.spin_thread.start()
 
-    def stop(self):
+    def _stop(self):
         if self.spin_thread:
             self.stop_running.set()
             self.spin_thread.join()
@@ -76,11 +76,11 @@ class Spinner(object):
         sys.stdout.flush()
 
     def __enter__(self):
-        self.start()
+        self._start()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
+        self._stop()
         if self.spin_thread:
             print(self.ending, end="")
             sys.stdout.flush()
