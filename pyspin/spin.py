@@ -1,19 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import, print_function
 
 import sys
 import threading
 import time
 from functools import wraps
 from concurrent.futures import ThreadPoolExecutor
-
-# For python 2/3 compatible.
-if sys.version_info.major == 2:
-    text_type = unicode
-else:
-    text_type = str
 
 Box1 = u'⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 Box2 = u'⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
@@ -59,7 +50,7 @@ class Spinner(object):
     def next(self):
         current_frame = self.current()
         self.position = (self.position + 1) % self.length
-        return text_type(current_frame)
+        return str(current_frame)
 
     def reset(self):
         self.position = 0
@@ -83,7 +74,7 @@ class Spinner(object):
             time.sleep(0.1)
 
     def _spin_cursor(self):
-        print(text_type("\r{0}    {1}").format(self.next(), self.words), end="")
+        print(str("\r{0}    {1}").format(self.next(), self.words), end="")
         sys.stdout.flush()
 
     def __enter__(self):
