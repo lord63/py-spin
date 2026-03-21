@@ -149,38 +149,25 @@ def test_context_manager_stops_on_exception(monkeypatch):
     assert stdout.getvalue().endswith('DONE')
 
 
-def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
-    stdout = NonTtyStringIO()
+def test_context_manager_raises_when_reentered_while_running(monkeypatch):
+    stdout = TtyStringIO()
     monkeypatch.setattr(spin.sys, 'stdout', stdout)
+    spinner = spin.Spinner('+-', 'Downloading...', 'DONE')
 
-    @spin.make_spin('+-', 'Downloading...', 'DONE')
-    def fake_download():
-        threading.Event().wait(0.2)
-
-    fake_download()
-    with spin.Spinner('+-', 'Downloading...', 'DONE'):
-        threading.Event().wait(0.2)
-
-    assert stdout.getvalue() == ''
+    spinner.__enter__()
+    try:
+        with pytest.raises(RuntimeError, match="already running"):
+            spinner.__enter__()
+    finally:
+        spinner.__exit__(None, None, None)
 
 
-def test_no_output_when_stdout_has_no_isatty(monkeypatch):
-    stdout = BareStream()
-    monkeypatch.setattr(spin.sys, 'stdout', stdout)
-
-    @spin.make_spin('+-', 'Downloading...', 'DONE')
-    def fake_download():
-        threading.Event().wait(0.2)
-
-    fake_download()
-    with spin.Spinner('+-', 'Downloading...', 'DONE'):
-        threading.Event().wait(0.2)
-
-    assert stdout.getvalue() == ''
-
-
-def test_no_output_when_stdout_has_bool_isatty(monkeypatch):
-    stdout = BoolIsattyStream()
+@pytest.mark.parametrize(
+    'stdout_factory',
+    [NonTtyStringIO, BareStream, BoolIsattyStream],
+)
+def test_no_output_when_stdout_is_not_a_tty(monkeypatch, stdout_factory):
+    stdout = stdout_factory()
     monkeypatch.setattr(spin.sys, 'stdout', stdout)
 
     @spin.make_spin('+-', 'Downloading...', 'DONE')
