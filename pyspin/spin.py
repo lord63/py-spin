@@ -58,7 +58,11 @@ class Spinner(object):
     def _start(self):
         if _is_tty(sys.stdout):
             self._stop_event = threading.Event()
-            self.spin_thread = threading.Thread(target=self._init_spin)
+            self.spin_thread = threading.Thread(
+                target=self._init_spin,
+                daemon=True,
+                name="SpinnerThread",
+            )
             self.spin_thread.start()
 
     def _stop(self):
