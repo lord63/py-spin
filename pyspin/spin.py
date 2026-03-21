@@ -74,7 +74,7 @@ class Spinner(object):
             time.sleep(0.1)
 
     def _spin_cursor(self):
-        print(str("\r{0}    {1}").format(self.next(), self.words), end="")
+        print("\r{0}    {1}".format(self.next(), self.words), end="")
         sys.stdout.flush()
 
     def __enter__(self):

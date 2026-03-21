@@ -21,7 +21,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --dev --frozen
+
+      - name: Lint
+        run: uv run ruff check .
 
       - name: Run tests
         run: uv run pytest -v test_pyspin.py
