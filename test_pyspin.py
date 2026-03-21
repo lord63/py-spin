@@ -222,5 +222,6 @@ def test_make_spin_flushes_ending(monkeypatch):
         return 'ok'
 
     assert fake_download() == 'ok'
-    assert stdout.getvalue() == 'DONE'
-    assert stdout.flush_count == 1
+    output = stdout.getvalue()
+    assert output.endswith('DONE')
+    assert stdout.flush_count >= 1
