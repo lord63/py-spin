@@ -34,6 +34,10 @@ Spin9 = u'←↑→↓'
 Default = Box1
 
 
+def _is_tty(output):
+    return getattr(output, 'isatty', lambda: False)()
+
+
 class Spinner(object):
     def __init__(self, frames=Default, words="", ending="\n"):
         self.frames = frames
@@ -56,7 +60,7 @@ class Spinner(object):
         self.position = 0
 
     def _start(self):
-        if sys.stdout.isatty():
+        if _is_tty(sys.stdout):
             self._stop_event = threading.Event()
             self.spin_thread = threading.Thread(target=self._init_spin)
             self.spin_thread.start()
@@ -100,7 +104,7 @@ def make_spin(spin_style=Default, words="", ending="\n"):
         def wrapper(*args, **kwargs):
             with ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(func, *args, **kwargs)
-                is_tty = sys.stdout.isatty()
+                is_tty = _is_tty(sys.stdout)
 
                 if is_tty:
                     while future.running():

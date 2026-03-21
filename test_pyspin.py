@@ -20,6 +20,10 @@ class NonTtyStringIO(io.StringIO):
         return False
 
 
+class NoIsattyStringIO(io.StringIO):
+    pass
+
+
 def test_spinner():
     spinner = spin.Spinner(spin.Spin9)
     assert spinner.length == 4
@@ -118,6 +122,21 @@ def test_context_manager_stops_on_exception(monkeypatch):
 
 def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
     stdout = NonTtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
+    @spin.make_spin('+-', 'Downloading...', 'DONE')
+    def fake_download():
+        threading.Event().wait(0.2)
+
+    fake_download()
+    with spin.Spinner('+-', 'Downloading...', 'DONE'):
+        threading.Event().wait(0.2)
+
+    assert stdout.getvalue() == ''
+
+
+def test_no_output_when_stdout_has_no_isatty(monkeypatch):
+    stdout = NoIsattyStringIO()
     monkeypatch.setattr(spin.sys, 'stdout', stdout)
 
     @spin.make_spin('+-', 'Downloading...', 'DONE')
