@@ -58,7 +58,7 @@ class Spinner(object):
     def _start(self):
         if sys.stdout.isatty():
             self._stop_event = threading.Event()
-            self.spin_thread = threading.Thread(target=self.init_spin)
+            self.spin_thread = threading.Thread(target=self._init_spin)
             self.spin_thread.start()
 
     def _stop(self):
@@ -68,7 +68,7 @@ class Spinner(object):
             self.spin_thread = None
             self._stop_event = None
 
-    def init_spin(self):
+    def _init_spin(self):
         while not self._stop_event.is_set():
             self._spin_cursor()
             time.sleep(0.1)
