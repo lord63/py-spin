@@ -4,6 +4,7 @@
 from __future__ import absolute_import, print_function
 
 import sys
+import threading
 import time
 from functools import wraps
 from concurrent.futures import ThreadPoolExecutor
@@ -13,7 +14,6 @@ if sys.version_info.major == 2:
     text_type = unicode
 else:
     text_type = str
-
 
 Box1 = u'⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 Box2 = u'⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓'
@@ -34,12 +34,24 @@ Spin9 = u'←↑→↓'
 Default = Box1
 
 
-class Spinner(object):
+def _is_tty(output):
+    isatty_attr = getattr(output, 'isatty', None)
+    if callable(isatty_attr):
+        return isatty_attr()
+    if isinstance(isatty_attr, bool):
+        return isatty_attr
+    return False
 
-    def __init__(self, frames):
+
+class Spinner(object):
+    def __init__(self, frames=Default, words="", ending="\n"):
         self.frames = frames
         self.length = len(frames)
         self.position = 0
+        self.words = words
+        self.ending = ending
+        self._stop_event = None
+        self.spin_thread = None
 
     def current(self):
         return self.frames[self.position]
@@ -52,24 +64,63 @@ class Spinner(object):
     def reset(self):
         self.position = 0
 
+    def _start(self):
+        if _is_tty(sys.stdout):
+            self._stop_event = threading.Event()
+            self.spin_thread = threading.Thread(target=self._init_spin)
+            self.spin_thread.start()
+
+    def _stop(self):
+        if self.spin_thread:
+            self._stop_event.set()
+            self.spin_thread.join()
+            self.spin_thread = None
+            self._stop_event = None
+
+    def _init_spin(self):
+        while not self._stop_event.is_set():
+            self._spin_cursor()
+            time.sleep(0.1)
+
+    def _spin_cursor(self):
+        print(text_type("\r{0}    {1}").format(self.next(), self.words), end="")
+        sys.stdout.flush()
+
+    def __enter__(self):
+        if self.spin_thread and self.spin_thread.is_alive():
+            raise RuntimeError("Spinner is already running")
+        self._start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        should_print_ending = self.spin_thread is not None
+        self._stop()
+        if should_print_ending:
+            print(self.ending, end="")
+            sys.stdout.flush()
+        return False
+
 
 def make_spin(spin_style=Default, words="", ending="\n"):
-    spinner = Spinner(spin_style)
+    spinner = Spinner(spin_style, words, ending)
 
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             with ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(func, *args, **kwargs)
+                is_tty = _is_tty(sys.stdout)
 
-                while future.running():
-                    print(text_type("\r{0}    {1}").format(spinner.next(),
-                                                           words),
-                          end="")
+                if is_tty:
+                    while future.running():
+                        spinner._spin_cursor()
+                        time.sleep(0.1)
+
+                if is_tty:
+                    print(spinner.ending, end="")
                     sys.stdout.flush()
-                    time.sleep(0.1)
-
-                print(ending, end="")
                 return future.result()
+
         return wrapper
+
     return decorator
