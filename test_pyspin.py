@@ -102,12 +102,20 @@ def test_several_calls():
     fake_download()
 
 
-def test_context_manager():
+def test_context_manager(monkeypatch):
+    stdout = TtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
     def fake_download():
         threading.Event().wait(0.2)
 
-    with spin.Spinner():
+    spinner = spin.Spinner()
+    with spinner:
         fake_download()
+
+    assert spinner.spin_thread is None
+    assert spinner._stop_event is None
+    assert stdout.getvalue()
 
 
 def test_make_spin_custom_params(monkeypatch):
