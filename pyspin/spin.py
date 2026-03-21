@@ -80,8 +80,9 @@ class Spinner(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
-        print(self.ending, end="")
-        sys.stdout.flush()
+        if self.spin_thread:
+            print(self.ending, end="")
+            sys.stdout.flush()
         return False
 
 
