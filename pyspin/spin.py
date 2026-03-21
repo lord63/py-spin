@@ -41,7 +41,7 @@ class Spinner(object):
         self.position = 0
         self.words = words
         self.ending = ending
-        self.stop_running = None
+        self._stop_event = None
         self.spin_thread = None
 
     def current(self):
@@ -57,17 +57,17 @@ class Spinner(object):
 
     def _start(self):
         if sys.stdout.isatty():
-            self.stop_running = threading.Event()
+            self._stop_event = threading.Event()
             self.spin_thread = threading.Thread(target=self.init_spin)
             self.spin_thread.start()
 
     def _stop(self):
         if self.spin_thread:
-            self.stop_running.set()
+            self._stop_event.set()
             self.spin_thread.join()
 
     def init_spin(self):
-        while not self.stop_running.is_set():
+        while not self._stop_event.is_set():
             self._spin_cursor()
             time.sleep(0.1)
 
