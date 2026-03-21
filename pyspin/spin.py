@@ -68,11 +68,12 @@ class Spinner(object):
 
     def init_spin(self):
         while not self.stop_running.is_set():
-            print(text_type("\r{0}    {1}").format(self.next(),
-                                                   self.words),
-                  end="")
-            sys.stdout.flush()
+            self._spin_cursor()
             time.sleep(0.1)
+
+    def _spin_cursor(self):
+        print(text_type("\r{0}    {1}").format(self.next(), self.words), end="")
+        sys.stdout.flush()
 
     def __enter__(self):
         self.start()
@@ -87,7 +88,7 @@ class Spinner(object):
 
 
 def make_spin(spin_style=Default, words="", ending="\n"):
-    spinner = Spinner(spin_style)
+    spinner = Spinner(spin_style, words, ending)
 
     def decorator(func):
         @wraps(func)
@@ -95,14 +96,13 @@ def make_spin(spin_style=Default, words="", ending="\n"):
             with ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(func, *args, **kwargs)
 
-                while future.running():
-                    print(text_type("\r{0}    {1}").format(spinner.next(),
-                                                           words),
-                          end="")
-                    sys.stdout.flush()
-                    time.sleep(0.1)
+                if sys.stdout.isatty():
+                    while future.running():
+                        spinner._spin_cursor()
+                        time.sleep(0.1)
 
-                print(ending, end="")
+                if sys.stdout.isatty():
+                    print(spinner.ending, end="")
                 return future.result()
 
         return wrapper
