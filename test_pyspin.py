@@ -20,8 +20,15 @@ class NonTtyStringIO(io.StringIO):
         return False
 
 
-class NoIsattyStringIO(io.StringIO):
-    pass
+class BareStream(object):
+    def __init__(self):
+        self._buf = []
+
+    def write(self, s):
+        self._buf.append(s)
+
+    def getvalue(self):
+        return ''.join(self._buf)
 
 
 class FlushTrackingTtyStringIO(TtyStringIO):
@@ -146,7 +153,7 @@ def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
 
 
 def test_no_output_when_stdout_has_no_isatty(monkeypatch):
-    stdout = NoIsattyStringIO()
+    stdout = BareStream()
     monkeypatch.setattr(spin.sys, 'stdout', stdout)
 
     @spin.make_spin('+-', 'Downloading...', 'DONE')
