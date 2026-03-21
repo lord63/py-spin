@@ -113,6 +113,7 @@ def make_spin(spin_style=Default, words="", ending="\n"):
 
                 if is_tty:
                     print(spinner.ending, end="")
+                    sys.stdout.flush()
                 return future.result()
 
         return wrapper

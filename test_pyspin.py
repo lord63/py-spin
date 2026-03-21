@@ -24,6 +24,16 @@ class NoIsattyStringIO(io.StringIO):
     pass
 
 
+class FlushTrackingTtyStringIO(TtyStringIO):
+    def __init__(self):
+        super(FlushTrackingTtyStringIO, self).__init__()
+        self.flush_count = 0
+
+    def flush(self):
+        self.flush_count += 1
+        super(FlushTrackingTtyStringIO, self).flush()
+
+
 def test_spinner():
     spinner = spin.Spinner(spin.Spin9)
     assert spinner.length == 4
@@ -167,3 +177,16 @@ def test_context_manager_reuse_after_tty_then_non_tty(monkeypatch):
     assert spinner.spin_thread is None
     assert spinner._stop_event is None
     assert non_tty_stdout.getvalue() == ''
+
+
+def test_make_spin_flushes_ending(monkeypatch):
+    stdout = FlushTrackingTtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
+    @spin.make_spin('+-', 'Downloading...', 'DONE')
+    def fake_download():
+        return 'ok'
+
+    assert fake_download() == 'ok'
+    assert stdout.getvalue() == 'DONE'
+    assert stdout.flush_count == 1
