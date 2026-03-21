@@ -61,6 +61,24 @@ or you can use the decorator pyspin provide:
         download_video()
         print("Done!")
 
+You can also use ``Spinner`` as a context manager:
+
+.. code:: python
+
+    from __future__ import print_function
+
+    import time
+
+    from pyspin.spin import Default, Spinner
+
+    def download_video():
+        time.sleep(10)
+
+    if __name__ == '__main__':
+        print("I'm going to download a video, and it'll cost much time.")
+        with Spinner(Default, "Downloading...", "Done!\n"):
+            download_video()
+
 You can have a look at the example code in the example folder. Run it
 via:
 
