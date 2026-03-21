@@ -24,7 +24,8 @@ Spin8 = u'■□▪▫'
 Spin9 = u'←↑→↓'
 Default = Box1
 
-
+# isatty is not part of any formal interface, so guard against streams that
+# define it as a non-callable attribute (e.g. a plain bool) rather than a method.
 def _is_tty(output):
     isatty_attr = getattr(output, 'isatty', None)
     if callable(isatty_attr):
@@ -58,6 +59,9 @@ class Spinner(object):
     def _start(self):
         if _is_tty(sys.stdout):
             self._stop_event = threading.Event()
+            # daemon=True: if the process exits unexpectedly without calling
+            # _stop(), this thread is killed automatically instead of keeping
+            # the process alive.
             self.spin_thread = threading.Thread(
                 target=self._init_spin,
                 daemon=True,
@@ -75,11 +79,11 @@ class Spinner(object):
     def _init_spin(self):
         while not self._stop_event.is_set():
             self._spin_cursor()
-            time.sleep(0.1)
 
     def _spin_cursor(self):
         print("\r{0}    {1}".format(self.next(), self.words), end="")
         sys.stdout.flush()
+        time.sleep(0.1)
 
     def __enter__(self):
         if self.spin_thread and self.spin_thread.is_alive():
@@ -92,6 +96,8 @@ class Spinner(object):
         self._stop()
         if should_print_ending:
             print(self.ending, end="")
+            # The ending may not contain a newline, so flush explicitly to
+            # ensure it appears on screen before the caller continues.
             sys.stdout.flush()
         return False
 
@@ -107,9 +113,11 @@ def make_spin(spin_style=Default, words="", ending="\n"):
                 is_tty = _is_tty(sys.stdout)
 
                 if is_tty:
-                    while future.running():
+                    # Use done() rather than running(): a future sits in PENDING
+                    # state briefly after submit() where running() is False, which
+                    # would cause the loop to exit before the task even starts.
+                    while not future.done():
                         spinner._spin_cursor()
-                        time.sleep(0.1)
 
                 if is_tty:
                     print(spinner.ending, end="")
