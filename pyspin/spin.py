@@ -35,7 +35,12 @@ Default = Box1
 
 
 def _is_tty(output):
-    return getattr(output, 'isatty', lambda: False)()
+    isatty_attr = getattr(output, 'isatty', None)
+    if callable(isatty_attr):
+        return isatty_attr()
+    if isinstance(isatty_attr, bool):
+        return isatty_attr
+    return False
 
 
 class Spinner(object):

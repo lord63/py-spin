@@ -31,6 +31,10 @@ class BareStream(object):
         return ''.join(self._buf)
 
 
+class BoolIsattyStream(BareStream):
+    isatty = False
+
+
 class FlushTrackingTtyStringIO(TtyStringIO):
     def __init__(self):
         super(FlushTrackingTtyStringIO, self).__init__()
@@ -154,6 +158,21 @@ def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
 
 def test_no_output_when_stdout_has_no_isatty(monkeypatch):
     stdout = BareStream()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
+    @spin.make_spin('+-', 'Downloading...', 'DONE')
+    def fake_download():
+        threading.Event().wait(0.2)
+
+    fake_download()
+    with spin.Spinner('+-', 'Downloading...', 'DONE'):
+        threading.Event().wait(0.2)
+
+    assert stdout.getvalue() == ''
+
+
+def test_no_output_when_stdout_has_bool_isatty(monkeypatch):
+    stdout = BoolIsattyStream()
     monkeypatch.setattr(spin.sys, 'stdout', stdout)
 
     @spin.make_spin('+-', 'Downloading...', 'DONE')
