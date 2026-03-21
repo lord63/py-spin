@@ -1,20 +1,25 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import, print_function
+#!/usr/bin/env python3
 
 import time
 
-from pyspin.spin import make_spin, Spin1
+from pyspin.spin import Default, Spinner, make_spin, Spin1
 
 
-@make_spin(Spin1, "Downloading...")
-def demo():
+# Context manager — recommended usage.
+def download_video():
     time.sleep(5)
 
 
 if __name__ == '__main__':
-    print("Assume we're downloading a video")
-    print("It would cost much time.")
-    demo()
-    print("Download success!")
+    print("Downloading a video with context manager:")
+    with Spinner(Default, "Downloading...", "Done!\n"):
+        download_video()
+
+    # Decorator — alternative usage.
+    @make_spin(Spin1, "Downloading...")
+    def download_video_with_decorator():
+        time.sleep(5)
+
+    print("Downloading a video with decorator:")
+    download_video_with_decorator()
+    print("Done!")

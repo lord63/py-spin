@@ -1,5 +1,18 @@
 Version numbers are following the Semantic Versioning.
 
+2026.03.21 v1.2.0
+- add
+    - context manager support for Spinner, thanks to @liiight 
+- fix
+    - flush ending output in make_spin
+    - harden TTY detection (support non-callable isatty and bool isatty)
+- change
+    - drop Python 2.x support
+    - require Python 3.10+
+- other
+    - migrate from Travis CI to GitHub Actions
+    - migrate from pip/setup.py to uv
+
 2017.04.13 v1.1.1
 - fix
     - fix incorrect futures requirement, thanks to @xoviat

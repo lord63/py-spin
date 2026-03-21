@@ -26,8 +26,6 @@ make a spinner by hand:
 
 .. code:: python
 
-    from __future__ import print_function
-
     import sys
     import time
 
@@ -45,8 +43,6 @@ or you can use the decorator pyspin provide:
 
 .. code:: python
 
-    from __future__ import print_function
-
     import time
 
     from pyspin.spin import make_spin, Default
@@ -60,6 +56,22 @@ or you can use the decorator pyspin provide:
         print("I'm going to download a video, and it'll cost much time.")
         download_video()
         print("Done!")
+
+You can also use ``Spinner`` as a context manager:
+
+.. code:: python
+
+    import time
+
+    from pyspin.spin import Default, Spinner
+
+    def download_video():
+        time.sleep(10)
+
+    if __name__ == '__main__':
+        print("I'm going to download a video, and it'll cost much time.")
+        with Spinner(Default, "Downloading...", "Done!\n"):
+            download_video()
 
 You can have a look at the example code in the example folder. Run it
 via:
@@ -86,8 +98,8 @@ MIT.
 
 .. |Latest Version| image:: http://img.shields.io/pypi/v/pyspin.svg
    :target: https://pypi.python.org/pypi/pyspin
-.. |Build Status| image:: https://travis-ci.org/lord63/py-spin.svg
-   :target: https://travis-ci.org/lord63/py-spin
+.. |Build Status| image:: https://github.com/lord63/py-spin/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/lord63/py-spin/actions/workflows/ci.yml
 .. |Python Versions| image:: https://img.shields.io/pypi/pyversions/pyspin.svg
    :target: https://pypi.python.org/pypi/pyspin
 .. |pyspin_demo| image:: https://cloud.githubusercontent.com/assets/5268051/7448038/ba152a8c-f241-11e4-86e0-50bc3b33bce5.gif
