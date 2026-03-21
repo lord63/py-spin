@@ -1,8 +1,11 @@
 test:
-	@py.test --pep8 -v test_pyspin.py pyspin/
+	@uv run pytest -v test_pyspin.py
+
+lint:
+	@uv run ruff check .
 
 create:
-	@python setup.py sdist bdist_wheel
+	@uv build
 
 upload:
-	@python setup.py sdist bdist_wheel upload
+	@uv publish
