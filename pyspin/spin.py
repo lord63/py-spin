@@ -76,6 +76,8 @@ class Spinner(object):
         sys.stdout.flush()
 
     def __enter__(self):
+        if self.spin_thread and self.spin_thread.is_alive():
+            raise RuntimeError("Spinner is already running")
         self._start()
         return self
 
