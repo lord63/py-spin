@@ -79,7 +79,7 @@ def test_several_calls():
 
 def test_context_manager():
     def fake_download():
-        time.sleep(2)
+        threading.Event().wait(0.2)
 
     with spin.Spinner():
         fake_download()
