@@ -1,9 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import io
+import threading
 import time
 
+import pytest
+
 from pyspin import spin
+
+
+class TtyStringIO(io.StringIO):
+    def isatty(self):
+        return True
+
+
+class NonTtyStringIO(io.StringIO):
+    def isatty(self):
+        return False
 
 
 def test_spinner():
@@ -69,3 +83,48 @@ def test_context_manager():
 
     with spin.Spinner():
         fake_download()
+
+
+def test_make_spin_custom_params(monkeypatch):
+    stdout = TtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
+    @spin.make_spin('+-', 'Downloading...', 'DONE')
+    def fake_download():
+        threading.Event().wait(0.2)
+
+    fake_download()
+
+    output = stdout.getvalue()
+    assert 'Downloading...' in output
+    assert 'DONE' in output
+    assert '\r+    Downloading...' in output or '\r-    Downloading...' in output
+
+
+def test_context_manager_stops_on_exception(monkeypatch):
+    stdout = TtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+    spinner = spin.Spinner('+-', 'Downloading...', 'DONE')
+
+    with pytest.raises(RuntimeError):
+        with spinner:
+            threading.Event().wait(0.2)
+            raise RuntimeError('boom')
+
+    assert not spinner.spin_thread.is_alive()
+    assert stdout.getvalue().endswith('DONE')
+
+
+def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
+    stdout = NonTtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', stdout)
+
+    @spin.make_spin('+-', 'Downloading...', 'DONE')
+    def fake_download():
+        threading.Event().wait(0.2)
+
+    fake_download()
+    with spin.Spinner('+-', 'Downloading...', 'DONE'):
+        threading.Event().wait(0.2)
+
+    assert stdout.getvalue() == ''
