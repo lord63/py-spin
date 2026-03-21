@@ -111,7 +111,8 @@ def test_context_manager_stops_on_exception(monkeypatch):
             threading.Event().wait(0.2)
             raise RuntimeError('boom')
 
-    assert not spinner.spin_thread.is_alive()
+    assert spinner.spin_thread is None
+    assert spinner._stop_event is None
     assert stdout.getvalue().endswith('DONE')
 
 
@@ -128,3 +129,22 @@ def test_no_output_when_stdout_is_not_a_tty(monkeypatch):
         threading.Event().wait(0.2)
 
     assert stdout.getvalue() == ''
+
+
+def test_context_manager_reuse_after_tty_then_non_tty(monkeypatch):
+    tty_stdout = TtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', tty_stdout)
+    spinner = spin.Spinner('+-', 'Downloading...', 'DONE')
+
+    with spinner:
+        threading.Event().wait(0.2)
+
+    non_tty_stdout = NonTtyStringIO()
+    monkeypatch.setattr(spin.sys, 'stdout', non_tty_stdout)
+
+    with spinner:
+        threading.Event().wait(0.2)
+
+    assert spinner.spin_thread is None
+    assert spinner._stop_event is None
+    assert non_tty_stdout.getvalue() == ''

@@ -65,6 +65,8 @@ class Spinner(object):
         if self.spin_thread:
             self._stop_event.set()
             self.spin_thread.join()
+            self.spin_thread = None
+            self._stop_event = None
 
     def init_spin(self):
         while not self._stop_event.is_set():
@@ -82,8 +84,9 @@ class Spinner(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        should_print_ending = self.spin_thread is not None
         self._stop()
-        if self.spin_thread:
+        if should_print_ending:
             print(self.ending, end="")
             sys.stdout.flush()
         return False
