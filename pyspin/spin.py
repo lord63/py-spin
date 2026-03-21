@@ -100,13 +100,14 @@ def make_spin(spin_style=Default, words="", ending="\n"):
         def wrapper(*args, **kwargs):
             with ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(func, *args, **kwargs)
+                is_tty = sys.stdout.isatty()
 
-                if sys.stdout.isatty():
+                if is_tty:
                     while future.running():
                         spinner._spin_cursor()
                         time.sleep(0.1)
 
-                if sys.stdout.isatty():
+                if is_tty:
                     print(spinner.ending, end="")
                 return future.result()
 
