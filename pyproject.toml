@@ -1,11 +1,11 @@
 [project]
 name = "pyspin"
-version = "1.2.0"
+version = "1.2.1"
 description = "Little terminal spinner lib."
 readme = "README.rst"
 license = { text = "MIT" }
 authors = [{ name = "lord63", email = "lord63.j@gmail.com" }]
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 keywords = ["terminal", "spin", "spinner"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -14,6 +14,7 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
